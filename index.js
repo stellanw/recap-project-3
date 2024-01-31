@@ -15,4 +15,17 @@ const maxPage = 1;
 const page = 1;
 const searchQuery = "";
 
-CharacterCard()
+//fetch
+
+const url = "https://rickandmortyapi.com/api/character";
+
+async function fetchCharacters() {
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log(data.results[0].name);
+  data.results.forEach((character) => {
+    CharacterCard(character);
+  });
+}
+
+console.log(fetchCharacters());
