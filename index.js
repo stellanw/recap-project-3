@@ -16,43 +16,63 @@ let page = 1;
 const searchQuery = "";
 
 let nextUrl = null;
-let prevUrl = null; 
+let prevUrl = null;
 //fetch
 
 async function fetchCharacters(page) {
-  const url = "https://rickandmortyapi.com/api/character?page="+page;
+  const url = "https://rickandmortyapi.com/api/character?page=" + page;
   // const url = url;
-  if (!page) {page=1}
+  if (!page) {
+    page = 1;
+  }
   const response = await fetch(url);
   const data = await response.json();
   maxPage = data.info.pages;
 
   nextUrl = data.info.next;
   prevUrl = data.info.prev;
-  
+
   // console.log(nextUrl)
   // console.log(data)
-  pagination.textContent = page +" / "+ maxPage
+  pagination.textContent = page + " / " + maxPage;
   await data.results.forEach((character) => {
     CharacterCard(character);
   });
-  return data;
+  return data.results;
 }
-fetchCharacters()
+fetchCharacters();
 
-nextButton.addEventListener( "click", () => {
+nextButton.addEventListener("click", () => {
   if (nextUrl) {
-    page ++
-    cardContainer.innerHTML=""
-    fetchCharacters(page);
-  }
-})
-prevButton.addEventListener( "click", () => {
-  if (prevUrl) {
-    page --
+    page++;
     cardContainer.innerHTML = "";
     fetchCharacters(page);
   }
-})
+});
+prevButton.addEventListener("click", () => {
+  if (prevUrl) {
+    page--;
+    cardContainer.innerHTML = "";
+    fetchCharacters(page);
+  }
+});
 
 //searchBar
+
+searchBar.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const searchQuery = event.target.query.value;
+  const dataCharacters = await fetchCharacters();
+  hasCharacters(searchQuery, dataCharacters);
+});
+
+function hasCharacters(searchCharacter, dataCharacters) {
+  const searchCharacterLow = searchCharacter.toLowerCase();
+  console.log(searchCharacterLow);
+  console.log(dataCharacters.name);
+  const foundDataCharacter = dataCharacters.find(
+    (dataCharacter) => dataCharacter.name.toLowerCase() === searchCharacterLow
+  );
+  console.log(foundDataCharacter);
+  return foundDataCharacter;
+}
