@@ -16,43 +16,69 @@ let page = 1;
 const searchQuery = "";
 
 let nextUrl = null;
-let prevUrl = null; 
+let prevUrl = null;
+
 //fetch
 
-async function fetchCharacters(page) {
-  const url = "https://rickandmortyapi.com/api/character?page="+page;
-  // const url = url;
-  if (!page) {page=1}
+const startUrl = "https://rickandmortyapi.com/api/character/?";
+
+async function fetchCharacters(url) {
+  if (!url) {
+   url = startUrl;
+  } 
   const response = await fetch(url);
   const data = await response.json();
   maxPage = data.info.pages;
-
   nextUrl = data.info.next;
   prevUrl = data.info.prev;
-  
-  // console.log(nextUrl)
-  // console.log(data)
-  pagination.textContent = page +" / "+ maxPage
+  pagination.textContent = `${page}/${maxPage}`;
   await data.results.forEach((character) => {
     CharacterCard(character);
   });
-  return data;
+  return data.results;
 }
-fetchCharacters()
+fetchCharacters();
 
-nextButton.addEventListener( "click", () => {
-  if (nextUrl) {
-    page ++
-    cardContainer.innerHTML=""
-    fetchCharacters(page);
-  }
-})
-prevButton.addEventListener( "click", () => {
-  if (prevUrl) {
-    page --
+nextButton.addEventListener("click", () => {
+  if (page < maxPage) {
     cardContainer.innerHTML = "";
-    fetchCharacters(page);
+    page++;
+    fetchCharacters(nextUrl);
   }
-})
+});
+
+prevButton.addEventListener("click", () => {
+  if (page > 1) {
+    cardContainer.innerHTML = "";
+    page--;
+    fetchCharacters(prevUrl);
+  }
+});
 
 //searchBar
+
+// searchBar.addEventListener("submit", async (event) => {
+//   event.preventDefault();
+//   const searchQuery = event.target.query.value;
+//   const dataCharacters = await fetchCharacters();
+//   hasCharacters(searchQuery, dataCharacters);
+// });
+
+// function hasCharacters(searchCharacter, dataCharacters) {
+//   const searchCharacterLow = searchCharacter.toLowerCase();
+//   const nameDataCharacter = dataCharacters.map((dataCharacter) => dataCharacter.name.toLowerCase())
+//   const foundDataCharacter = nameDataCharacter.some(
+//     (dataCharacter) => dataCharacter.includes(searchCharacterLow)
+//   );
+//   return foundDataCharacter;
+// }
+
+searchBar.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const searchQuery = event.target.query.value.toLowerCase();
+  cardContainer.innerHTML="";
+  const searchURl =
+    `${startUrl}name=${encodeURIComponent(searchQuery)}`;
+    fetchCharacters(searchURl);
+    return page = 1;
+})
