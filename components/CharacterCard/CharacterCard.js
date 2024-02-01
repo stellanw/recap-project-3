@@ -1,8 +1,9 @@
-const cardContainer = document.querySelector('[data-js="card-container"]');
 
 export function CharacterCard(character) {
-  const newCard = document.createElement("li");
-  newCard.innerHTML = `
+    const cardContainer = document.querySelector('[data-js="card-container"]');
+    // cardContainer.innerHTML = "";
+    const newCard = document.createElement("li");
+    newCard.innerHTML = `
       <li class="card">
         <div class="card__image-container">
           <img
@@ -20,7 +21,7 @@ export function CharacterCard(character) {
             <dt class="card__info-title">Type</dt>
             <dd class="card__info-description">${character.type}</dd>
             <dt class="card__info-title">Occurrences</dt>
-            <dd class="card__info-description">${character.episode}</dd>
+            <dd class="card__info-description">${character.episode.length}</dd>
           </dl>
         </div>
       </li>
