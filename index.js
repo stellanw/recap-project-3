@@ -19,22 +19,22 @@ let nextUrl = null;
 let prevUrl = null;
 //fetch
 
-async function fetchCharacters(page) {
-  const url = "https://rickandmortyapi.com/api/character?page=" + page;
-  // const url = url;
-  if (!page) {
-    page = 1;
-  }
+const startUrl = "https://rickandmortyapi.com/api/character/?";
+
+async function fetchCharacters(url) {
+  if ( !url) {
+   url = startUrl;
+  } 
   const response = await fetch(url);
   const data = await response.json();
   maxPage = data.info.pages;
-
+  console.log(data)
+  console.log(url)
   nextUrl = data.info.next;
   prevUrl = data.info.prev;
+  // page = nextUrl.split("="); 
 
-  // console.log(nextUrl)
-  // console.log(data)
-  pagination.textContent = page + " / " + maxPage;
+  pagination.textContent = `${page[1]-1}/${maxPage}`;
   await data.results.forEach((character) => {
     CharacterCard(character);
   });
@@ -43,34 +43,41 @@ async function fetchCharacters(page) {
 fetchCharacters();
 
 nextButton.addEventListener("click", () => {
-  if (nextUrl) {
-    page++;
     cardContainer.innerHTML = "";
-    fetchCharacters(page);
-  }
+    fetchCharacters(nextUrl);
 });
+
 prevButton.addEventListener("click", () => {
-  if (prevUrl) {
-    page--;
     cardContainer.innerHTML = "";
-    fetchCharacters(page);
-  }
+    fetchCharacters(prevUrl);
 });
 
 //searchBar
 
-searchBar.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const searchQuery = event.target.query.value;
-  const dataCharacters = await fetchCharacters();
-  hasCharacters(searchQuery, dataCharacters);
-});
+// searchBar.addEventListener("submit", async (event) => {
+//   event.preventDefault();
+//   const searchQuery = event.target.query.value;
+//   const dataCharacters = await fetchCharacters();
+//   hasCharacters(searchQuery, dataCharacters);
+// });
 
-function hasCharacters(searchCharacter, dataCharacters) {
-  const searchCharacterLow = searchCharacter.toLowerCase();
-  const nameDataCharacter = dataCharacters.map((dataCharacter) => dataCharacter.name.toLowerCase())
-  const foundDataCharacter = nameDataCharacter.some(
-    (dataCharacter) => dataCharacter.includes(searchCharacterLow)
-  );
-  return foundDataCharacter;
-}
+// function hasCharacters(searchCharacter, dataCharacters) {
+//   const searchCharacterLow = searchCharacter.toLowerCase();
+//   const nameDataCharacter = dataCharacters.map((dataCharacter) => dataCharacter.name.toLowerCase())
+//   const foundDataCharacter = nameDataCharacter.some(
+//     (dataCharacter) => dataCharacter.includes(searchCharacterLow)
+//   );
+//   return foundDataCharacter;
+// }
+
+searchBar.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const searchQuery = event.target.query.value.toLowerCase();
+  cardContainer.innerHTML="";
+  const searchURl =
+    `${startUrl}name=${encodeURIComponent(searchQuery)}`;
+
+    page = 1;
+    fetchCharacters(searchURl);
+
+})
