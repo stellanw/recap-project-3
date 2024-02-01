@@ -22,6 +22,7 @@ let prevUrl = null;
 async function fetchCharacters(page) {
   const url = "https://rickandmortyapi.com/api/character?page="+page;
   // const url = url;
+  if (!page) {page=1}
   const response = await fetch(url);
   const data = await response.json();
   maxPage = data.info.pages;
@@ -29,8 +30,8 @@ async function fetchCharacters(page) {
   nextUrl = data.info.next;
   prevUrl = data.info.prev;
   
-  console.log(nextUrl)
-  console.log(data)
+  // console.log(nextUrl)
+  // console.log(data)
   pagination.textContent = page +" / "+ maxPage
   await data.results.forEach((character) => {
     CharacterCard(character);
@@ -42,6 +43,16 @@ fetchCharacters()
 nextButton.addEventListener( "click", () => {
   if (nextUrl) {
     page ++
+    cardContainer.innerHTML=""
     fetchCharacters(page);
   }
 })
+prevButton.addEventListener( "click", () => {
+  if (prevUrl) {
+    page --
+    cardContainer.innerHTML = "";
+    fetchCharacters(page);
+  }
+})
+
+//searchBar

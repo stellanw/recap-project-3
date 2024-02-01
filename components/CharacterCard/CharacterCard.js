@@ -1,7 +1,7 @@
-const cardContainer = document.querySelector('[data-js="card-container"]');
 
 export function CharacterCard(character) {
-    cardContainer.innerHTML = "";
+    const cardContainer = document.querySelector('[data-js="card-container"]');
+    // cardContainer.innerHTML = "";
     const newCard = document.createElement("li");
     newCard.innerHTML = `
       <li class="card">
