@@ -68,11 +68,9 @@ searchBar.addEventListener("submit", async (event) => {
 
 function hasCharacters(searchCharacter, dataCharacters) {
   const searchCharacterLow = searchCharacter.toLowerCase();
-  console.log(searchCharacterLow);
-  console.log(dataCharacters.name);
-  const foundDataCharacter = dataCharacters.find(
-    (dataCharacter) => dataCharacter.name.toLowerCase() === searchCharacterLow
+  const nameDataCharacter = dataCharacters.map((dataCharacter) => dataCharacter.name.toLowerCase())
+  const foundDataCharacter = nameDataCharacter.some(
+    (dataCharacter) => dataCharacter.includes(searchCharacterLow)
   );
-  console.log(foundDataCharacter);
   return foundDataCharacter;
 }
